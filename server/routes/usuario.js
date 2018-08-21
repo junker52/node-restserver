@@ -97,4 +97,31 @@ app.delete('/usuario/:id', function (req, res) {
     })
 })
 
+app.delete('/usuario/logicdelete/:id', function (req, res) {
+    let id = req.params.id;
+    Usuario.findById(id, null, { estado: true }, (err, usuario) => {
+        if (err || usuario === null) {
+            return res.status(400).json({
+                ok: false,
+                err
+            }); 
+        }
+        usuario.estado = false;
+        Usuario.findByIdAndUpdate(id, usuario, {new: true}, (err, usuarioDB) => {
+            if (err) {
+                return res.status(400).json({
+                    ok: false,
+                    err
+                }); 
+            }
+    
+            res.json({
+                ok: true,
+                usuario: usuarioDB
+            });
+        })
+
+    })
+})
+
 module.exports = app;

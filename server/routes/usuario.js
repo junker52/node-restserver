@@ -14,8 +14,7 @@ app.get('/usuario', function (req, res) {
     let limite = req.query.limite || 5;
     limite = Number(limite);
 
-
-    Usuario.find({})
+    Usuario.find({}, 'nombre email')
             .skip(desde)
             .limit(limite)
             .exec( (err, usuarios) => {
@@ -26,10 +25,15 @@ app.get('/usuario', function (req, res) {
                     });
                 }
 
-                res.json({
-                    ok: true,
-                    usuarios
-                });
+                Usuario.count({}, (err, count) => {
+                    res.json({
+                        ok: true,
+                        usuarios,
+                        count
+                    });
+                })
+
+
             })
 })
 
@@ -76,8 +80,21 @@ app.put('/usuario/:id', function (req, res) {
     })
 })
 
-app.delete('/usuario', function (req, res) {
-    res.json('Delete Users')
+app.delete('/usuario/:id', function (req, res) {
+    let id = req.params.id;
+    Usuario.findByIdAndRemove(id, (err, usuarioDeleted) => {
+        if (err || usuarioDeleted === null) {
+            return res.status(400).json({
+                ok: false,
+                err
+            }); 
+        }
+
+        res.json({
+            ok: true,
+            usuario: usuarioDeleted
+        })
+    })
 })
 
 module.exports = app;

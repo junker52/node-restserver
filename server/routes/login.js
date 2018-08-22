@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const _ = require('underscore');
 const Usuario = require('../../models/usuario');
 
@@ -30,10 +31,14 @@ app.post('/login', (req, res) => {
             })
         }
 
+        let token = jwt.sign({
+            usuario: usuarioDB
+        }, 'secret', {expiresIn: 3600*24*30});
+
         return res.json({
             ok: true,
             usuario: usuarioDB,
-            token: '123'
+            token
         })
         
     })

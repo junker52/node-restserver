@@ -23,3 +23,10 @@ if (process.env.NODE_ENV === 'dev') {
 }
 
 process.env.URLDB = urlDB;
+
+// ==========================
+// JWT
+// ==========================
+
+process.env.CADUCIDAD_TOKEN = 3600*24*30;
+process.env.CLAVE_TOKEN = process.env.CLAVE_TOKEN |'secret';

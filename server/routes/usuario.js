@@ -3,12 +3,13 @@ const app = express();
 const bcrypt = require('bcrypt');
 const _ = require('underscore');
 const Usuario = require('../../models/usuario');
+const verificaToken = require('../middlewares/autentication');
 
 app.get('/', function (req, res) {
     res.json('Hello World')
 })
 
-app.get('/usuario', function (req, res) {
+app.get('/usuario', verificaToken, function (req, res) {
     let desde = req.query.desde || 0;
     desde = Number(desde);
     let limite = req.query.limite || 5;

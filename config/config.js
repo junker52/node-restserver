@@ -28,5 +28,5 @@ process.env.URLDB = urlDB;
 // JWT
 // ==========================
 
-process.env.CADUCIDAD_TOKEN = 3600*24*30;
+process.env.CADUCIDAD_TOKEN = '200h';
 process.env.CLAVE_TOKEN = process.env.CLAVE_TOKEN |'secret';

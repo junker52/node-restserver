@@ -6,7 +6,10 @@ const authenticationMiddlewares = require('../middlewares/autentication');
 let Categoria = require('../../models/categoria');
 
 app.get('/categoria', [authenticationMiddlewares.verificaToken], async(req,res) => {
-    let categorias = await Categoria.find().catch((err) => {
+    let categorias = await Categoria.find()
+    .sort('descripcion')
+    .populate('usuario', 'nombre email')
+    .catch((err) => {
         return res.status(500).json({
             ok: false,
             error: err
@@ -44,7 +47,6 @@ app.get('/categoria/:id', [authenticationMiddlewares.verificaToken], async(req, 
 });
 
 app.post('/categoria', [authenticationMiddlewares.verificaToken], async(req, res) => {
-    //retorna la categoria cread
     let body = req.body;
     let categoria = new Categoria({
         descripcion: body.descripcion,

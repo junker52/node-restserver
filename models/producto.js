@@ -25,7 +25,7 @@ let productoSchema = new Schema({
     },
     usuario: {
         type: Schema.Types.ObjectId,
-        ref: 'Usuario'
+        ref: 'usuario'
     }
 })
 

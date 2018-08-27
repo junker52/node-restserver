@@ -5,7 +5,9 @@ const app = express();
 // centralize files to req.files...
 app.use(fileUpload());
 
-app.put('/upload', function(req, res) {
+app.put('/upload/:tipo/:id', function(req, res) {
+    let tipoUpload = req.params.tipo;
+    let id = req.params.id;
     if (!req.files)
     return res.status(400).json({
         ok: false,
@@ -14,14 +16,22 @@ app.put('/upload', function(req, res) {
         }
     });
 
+    let validTypes = ['productos','usuarios']
+    if (validTypes.indexOf(tipoUpload) < 0) {
+        return res.status(400).json({
+            ok: false,
+            error: {
+                message: `Tipo not allowed`
+            }
+        })
+    }
+
     //req.files.[input name]
     let archivo = req.files.archivo;
 
     //Verifying extensions
     let validExtensions = ['png', 'jpeg', 'gif', 'jpg'];
-    let nombreArchivo = archivo.name.split('.')[0];
     let extensionArchivo = archivo.name.split('.')[1];
-    console.log(extensionArchivo);
 
     if (validExtensions.indexOf(extensionArchivo) < 0) {
         return res.status(400).json({
@@ -33,8 +43,9 @@ app.put('/upload', function(req, res) {
     }
 
     let timestamp = Date.now();
+    let nameFile = `${timestamp}-${id}.${extensionArchivo}`
 
-    archivo.mv(`uploads/${timestamp}-${archivo.name}`, (err) => {
+    archivo.mv(`uploads/${tipoUpload}/${nameFile}`, (err) => {
         if (err) {
             return res.status(500).json({
                 ok: false,

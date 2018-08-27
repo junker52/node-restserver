@@ -17,7 +17,24 @@ app.put('/upload', function(req, res) {
     //req.files.[input name]
     let archivo = req.files.archivo;
 
-    archivo.mv('uploads/filename.jpg', (err) => {
+    //Verifying extensions
+    let validExtensions = ['png', 'jpeg', 'gif', 'jpg'];
+    let nombreArchivo = archivo.name.split('.')[0];
+    let extensionArchivo = archivo.name.split('.')[1];
+    console.log(extensionArchivo);
+
+    if (validExtensions.indexOf(extensionArchivo) < 0) {
+        return res.status(400).json({
+            ok: false,
+            error: {
+                message: `Extension ${extensionArchivo} not allowed`
+            }
+        })
+    }
+
+    let timestamp = Date.now();
+
+    archivo.mv(`uploads/${timestamp}-${archivo.name}`, (err) => {
         if (err) {
             return res.status(500).json({
                 ok: false,

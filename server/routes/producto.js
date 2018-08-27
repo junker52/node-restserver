@@ -7,7 +7,7 @@ const Producto = require('../../models/producto');
 /**
  * Listing all products with pagination
  */
-app.get('/productos', async(req, res) => {
+app.get('/productos', [authenticationMiddlewares.verificaToken], async(req, res) => {
    let from = req.query.from || 0;
    from = Number(from);
     let to = req.query.to || 5;
@@ -36,7 +36,7 @@ app.get('/productos', async(req, res) => {
 
 });
 
-app.get('/productos/:id', async(req, res) => {
+app.get('/productos/:id',  [authenticationMiddlewares.verificaToken], async(req, res) => {
     let productoId = req.params.id
     let productoDB = await Producto.findById(productoId)
         .populate('usuario')
@@ -86,7 +86,7 @@ app.post('/productos', [authenticationMiddlewares.verificaToken], async(req, res
     })
 });
 
-app.put('/productos/:id', async(req, res) => {
+app.put('/productos/:id', [authenticationMiddlewares.verificaToken], async(req, res) => {
     let productoId = req.params.id;
     let bodyToUpdate = _.pick(req.body, ['nombre', 'precioUni', 'descripcion', 'categoria'])
     let productoUpdated = await Producto.findByIdAndUpdate(productoId, bodyToUpdate,{new: true, runValidators: true})
@@ -113,7 +113,7 @@ app.put('/productos/:id', async(req, res) => {
     })
 });
 
-app.delete('/productos/:id', async(req, res) => {
+app.delete('/productos/:id', [authenticationMiddlewares.verificaToken], async(req, res) => {
     //canviar disponible a falso
     let productoId = req.params.id;
     let productoUpdated = await Producto.findByIdAndUpdate(productoId, {disponible: false},{new: true, runValidators: true})

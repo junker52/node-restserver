@@ -56,6 +56,29 @@ app.get('/productos/:id',  [authenticationMiddlewares.verificaToken], async(req,
         })
 });
 
+//Buscar productos
+app.get('/productos/buscar/:termino', [authenticationMiddlewares.verificaToken], async(req, res) => {
+    let termino = req.params.termino;
+
+    let regex = new RegExp(termino, 'i');
+
+    let productos = await Producto.find({nombre: regex})
+        .populate('usuario', 'categoria')
+        .exec(). catch((error) => {
+            if (error) {
+                return res.status(500).json({
+                    ok: false,
+                    error
+                }); 
+            }
+        })
+    
+        return res.json({
+            ok: true,
+            productos
+        })
+});
+
 
 app.post('/productos', [authenticationMiddlewares.verificaToken], async(req, res) => {
     //grabar usuario
